@@ -34,7 +34,7 @@
 
         const incomeClick = () => {
           if (Number(incomeEl.value)) {
-            if (Number(saveEl.value) != "") {
+            if (Number(saveEl.value)) {
               console.log(incomeEl.value);
               const weeklyInc = Number(incomeEl.value) / 4;
               const weeklyToSave = Number(saveEl.value) / weeklyInc;

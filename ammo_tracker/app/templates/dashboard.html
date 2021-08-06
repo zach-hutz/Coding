@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block body %}
+<link rel="stylesheet" type="text/css" href="https://dl.dropbox.com/s/uv720gm9gexalnk/dashboard.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">Encrypted Chat Server</a>
+      </div>
+    </div>
+  </nav>
+      <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <h1 class="page-header">Welcome</h1>
+        </div>
+
+        <h2 class="sub-header">Previous Rooms</h2>
+        <div class="table-responsive">
+          <table class="table table-striped" id='table'>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Room Name</th>
+                <th>Users</th>
+              </tr>
+            </thead>
+            <tbody id="table_data">
+            </tbody>
+          </table>
+          <br>
+          <br>
+          <table class="table table-striped" id='viewfriend'>
+            <thead>
+              <tr>
+                <th>Username</th>
+              </tr>
+            </thead>
+            <tbody id="viewfriendsbody">
+            </tbody>
+          </table>
+          <br>
+          <br>
+          <table class="table table-striped" id='friendlist'>
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Pending</th>
+                <th>Accept</th>
+                <th>Decline</th>
+              </tr>
+            </thead>
+            <tbody id="friend-data">
+            </tbody>
+          </table>
+        </div>
+        <div id='add'>
+          <form>
+            <label for="password">Password:</label><br>
+            <input type="text" name='Add password' id='password'>
+            <input type="submit" value='Submit' id='addbtn'>
+          </form>
+        </div>
+      </div>
+      <br>
+    </div>
+  </div>
+
+
+  <script>
+    $(document).ready(function(){
+     
+    })
+  </script>
+{% endblock %}

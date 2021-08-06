@@ -1,0 +1,112 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block body %}
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js"
+  integrity="sha512-n/4gHW3atM3QqRcbCn6ewmpxcLAHGaDjpEBu4xZd47N0W2oQ+6q7oc3PXstrJYXcbNU1OHdQ1T7pAP+gi5Yu8g=="
+  crossorigin="anonymous"
+></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div>
+  <center>
+    <h1>Ammo Tracker</h1>
+    <br />
+    <br />
+    <table class="table" id="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Caliber</th>
+          <th>Ammount</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+    <div id="addArea">
+      <b>Add Ammo</b>
+      <div id="adding-msg"></div>
+      <select id="dropdown">
+        <option value="7.62x39mm">7.62x39mm</option>
+        <option value="6.5 Grendel">6.5 Grendel</option>
+        <option value="30-06">30-06</option>
+        <option value="22LR">22LR</option>
+        <option value="9mm">9mm</option>
+      </select>
+      <input type="text" id="inputField" name="Amount" />
+      <button type="button" id="addBtn">Add</button>
+      <h1 id="error-msg">Error: Please enter a number</h1>
+    </div>
+  </center>
+</div>
+<br />
+<br />
+<br />
+
+<script>
+  $(document).ready(function () {
+    $.ajax({
+      url: "/pullData",
+      type: "GET",
+      contentType: "application/json",
+      dataType: "JSON",
+      success: function (response) {
+        console.log(response);
+        for (key in response) {
+          console.log(response[key]);
+          document.getElementById("table-body").innerHTML += `<tr>
+              <td>${response[key][0]}</td>
+              <td>${response[key][1]}</td>
+              <td>${response[key][2]}</td></tr>`;
+        }
+      },
+    });
+    let drop_option;
+    let inputField;
+
+    document.getElementById("addBtn").addEventListener("click", function () {
+      drop_option = $("#dropdown").val();
+      inputField = $("#inputField").val();
+      inputField = Number(inputField);
+
+      document.getElementById(
+        "adding-msg"
+      ).innerHTML = `<h2>Adding ${inputField} bullets to ${drop_option}</h2>`;
+
+      $.ajax({
+        url: "/update-db",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json",
+        data: JSON.stringify({ caliber: drop_option, count: inputField }),
+        success: function (response) {
+          console.log("yes");
+          console.log(response);
+          document.getElementById("table-body").innerHTML = "";
+
+          $.ajax({
+            url: "/pullData",
+            type: "GET",
+            contentType: "application/json",
+            dataType: "JSON",
+            success: function (response) {
+              for (key in response) {
+                console.log(response[key]);
+                document.getElementById("table-body").innerHTML += `<tr>
+                        <td>${response[key][0]}</td>
+                        <td>${response[key][1]}</td>
+                        <td>${response[key][2]}</td></tr>`;
+              }
+            },
+          });
+        },
+      });
+    });
+  });
+</script>
+
+<style>
+  #error-msg {
+    color: red;
+    display: none;
+  }
+</style>
+{% endblock %}

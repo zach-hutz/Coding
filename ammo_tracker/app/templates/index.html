@@ -21,19 +21,37 @@
       </thead>
       <tbody id="table-body"></tbody>
     </table>
-    <div id="addArea">
-      <b>Add Ammo</b>
-      <div id="adding-msg"></div>
-      <select id="dropdown">
-        <option value="7.62x39mm">7.62x39mm</option>
-        <option value="6.5 Grendel">6.5 Grendel</option>
-        <option value="30-06">30-06</option>
-        <option value="22LR">22LR</option>
-        <option value="9mm">9mm</option>
-      </select>
-      <input type="text" id="inputField" name="Amount" />
-      <button type="button" id="addBtn">Add</button>
-      <h1 id="error-msg">Error: Please enter a number</h1>
+    <div>
+      <div id="addArea">
+        <b>Add Ammo</b>
+        <div id="adding-msg"></div>
+        <select id="dropdown">
+          <option value="7.62x39mm">7.62x39mm</option>
+          <option value="6.5 Grendel">6.5 Grendel</option>
+          <option value="30-06">30-06</option>
+          <option value="22LR">22LR</option>
+          <option value="9mm">9mm</option>
+        </select>
+        <input type="text" id="inputField" name="Amount" />
+        <button type="button" id="addBtn">Add</button>
+        <h1 id="error-msg">Error: Please enter a number</h1>
+      </div>
+      <br />
+      <br />
+      <div id="removeArea">
+        <b>Remove Ammo</b>
+        <div id="removing-msg"></div>
+        <select id="dropdown2">
+          <option value="7.62x39mm">7.62x39mm</option>
+          <option value="6.5 Grendel">6.5 Grendel</option>
+          <option value="30-06">30-06</option>
+          <option value="22LR">22LR</option>
+          <option value="9mm">9mm</option>
+        </select>
+        <input type="text" id="removeField" name="Amount" />
+        <button type="button" id="removeBtn">Remove</button>
+        <h1 id="error-msg">Error: Please enter a number</h1>
+      </div>
     </div>
   </center>
 </div>
@@ -65,6 +83,10 @@
     document.getElementById("addBtn").addEventListener("click", function () {
       drop_option = $("#dropdown").val();
       inputField = $("#inputField").val();
+      //inputField = String(inputField);
+      if (inputField.includes("-")) {
+        inputField = inputField.replace("-", "");
+      }
       inputField = Number(inputField);
 
       document.getElementById(
@@ -72,7 +94,50 @@
       ).innerHTML = `<h2>Adding ${inputField} bullets to ${drop_option}</h2>`;
 
       $.ajax({
-        url: "/update-db",
+        url: "/add-db",
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json",
+        data: JSON.stringify({ caliber: drop_option, count: inputField }),
+        success: function (response) {
+          console.log("yes");
+          console.log(response);
+          document.getElementById("table-body").innerHTML = "";
+
+          $.ajax({
+            url: "/pullData",
+            type: "GET",
+            contentType: "application/json",
+            dataType: "JSON",
+            success: function (response) {
+              for (key in response) {
+                console.log(response[key]);
+                document.getElementById("table-body").innerHTML += `<tr>
+                        <td>${response[key][0]}</td>
+                        <td>${response[key][1]}</td>
+                        <td>${response[key][2]}</td></tr>`;
+              }
+            },
+          });
+        },
+      });
+    });
+
+    document.getElementById("removeBtn").addEventListener("click", function () {
+      drop_option = $("#dropdown2").val();
+      inputField = $("#removeField").val();
+      //inputField = String(inputField);
+      if (inputField.includes("-")) {
+        inputField = inputField.replace("-", "");
+      }
+      inputField = Number(inputField);
+
+      document.getElementById(
+        "removing-msg"
+      ).innerHTML = `<h2>Removing ${inputField} bullets to ${drop_option}</h2>`;
+
+      $.ajax({
+        url: "/remove-db",
         type: "POST",
         dataType: "json",
         contentType: "application/json",

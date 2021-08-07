@@ -50,9 +50,35 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/remove-db', methods=['GET', 'POST'])
+def removeDB():
+    data = request.get_json()
+    dataArray = []
+    for keys in data:
+        dataArray.append(data[keys])
+    caliber = dataArray[0]
+    amount = dataArray[1]
+    print(caliber, amount)
 
-@app.route('/update-db', methods=['GET', 'POST'])
-def updateDB():
+    with sqlite3.connect(dbpath) as con:
+        c = con.cursor()
+        c.execute('SELECT count FROM user WHERE caliber = ?', ([caliber]))
+        res = c.fetchall()
+        res = str(res)
+        res = res.replace('[(', '')
+        res = res.replace(',)]', '')
+        print('-'*200)
+        print(res)
+        res = int(res)
+        c.execute('UPDATE user SET count = ? WHERE caliber = ?', (res-amount, caliber))
+        rv = c.fetchall()
+        print(rv)
+    return redirect("/pullData")
+
+
+
+@app.route('/add-db', methods=['GET', 'POST'])
+def addDB():
     data = request.get_json()
     dataArray = []
     for keys in data:

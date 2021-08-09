@@ -11,6 +11,14 @@
     <h1>Ammo Tracker</h1>
     <br />
     <br />
+    <div>
+      <b>Add new caliber</b>
+      <div id="addedField"></div>
+      <input type="text" id="addCaliber" name="Caliber" />
+      <button id="addCaliberBTN">Add Caliber</button>
+    </div>
+    <br />
+    <br />
     <table class="table" id="table">
       <thead>
         <tr>
@@ -165,10 +173,49 @@
         },
       });
     });
+
+    document
+      .getElementById("addCaliberBTN")
+      .addEventListener("click", function () {
+        let caliberField = $("#addCaliber").val();
+        console.log(caliberField);
+        $.ajax({
+          url: "/addCaliber",
+          type: "POST",
+          dataType: "JSON",
+          contentType: "application/json",
+          data: JSON.stringify(caliberField),
+        });
+        console.log("test");
+        document.getElementById("addedField").style.display = "";
+        document.getElementById(
+          "addedField"
+        ).innerHTML = `<h2>Added ${caliberField} to table.</h2>`;
+
+        $.ajax({
+          url: "/pullData",
+          type: "GET",
+          contentType: "application/json",
+          dataType: "JSON",
+          success: function (response) {
+            for (key in response) {
+              console.log(response[key]);
+              document.getElementById("table-body").innerHTML += `<tr>
+                        <td>${response[key][0]}</td>
+                        <td>${response[key][1]}</td>
+                        <td>${response[key][2]}</td></tr>`;
+            }
+          },
+        });
+      });
   });
 </script>
 
 <style>
+  #addedField > h2 {
+    color: greenyellow;
+  }
+
   #error-msg {
     color: red;
     display: none;

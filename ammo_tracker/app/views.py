@@ -120,3 +120,14 @@ def pullData():
         print(json_data)
 
     return jsonify(rv)
+
+
+@app.route('/addCaliber', methods=['POST', 'GET'])
+def addCaliber():
+    caliber = request.get_json()
+    with sqlite3.connect(dbpath) as con:
+        new_user = User(caliber=caliber, count=0)    
+        db.session.add(new_user)
+        db.session.commit()
+            
+    return ('success')
